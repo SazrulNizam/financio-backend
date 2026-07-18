@@ -12,7 +12,7 @@ class ListInvoiceRequest extends FormRequest
      */
     public function authorize(): bool
     {
-        return false;
+        return true;
     }
 
     /**
@@ -23,7 +23,9 @@ class ListInvoiceRequest extends FormRequest
     public function rules(): array
     {
         return [
-            //
+            'sort_by'    => 'nullable|string|in:invoice_number,customer_name,invoice_date,amount,created_at',
+            'sort_order' => 'nullable|string|in:asc,desc',
+            'per_page'   => 'nullable|integer|min:1|max:100',
         ];
     }
 }
