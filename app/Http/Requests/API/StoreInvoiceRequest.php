@@ -6,7 +6,7 @@ use Illuminate\Contracts\Validation\ValidationRule;
 use Illuminate\Foundation\Http\FormRequest;
 use Illuminate\Validation\Rule;
 
-class UpdateInvoiceRequest extends FormRequest
+class StoreInvoiceRequest extends FormRequest
 {
     public function authorize(): bool
     {
@@ -26,7 +26,7 @@ class UpdateInvoiceRequest extends FormRequest
                         ->where('customer_name', $this->customer_name)
                         ->whereYear('invoice_date', date('Y', strtotime($this->invoice_date)))
                         ->whereNull('deleted_at');
-                })->ignore($this->invoice->id), // ignore current invoice
+                }),
             ],
             'customer_name' => 'required|string|max:255',
             'invoice_date'  => 'required|date',
