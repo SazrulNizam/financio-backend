@@ -1,11 +1,11 @@
 <?php
 
-namespace App\Http\Requests;
+namespace App\Http\Requests\API;
 
 use Illuminate\Contracts\Validation\ValidationRule;
 use Illuminate\Foundation\Http\FormRequest;
 
-class CreateInvoiceRequest extends FormRequest
+class ListInvoiceRequest extends FormRequest
 {
     /**
      * Determine if the user is authorized to make this request.
