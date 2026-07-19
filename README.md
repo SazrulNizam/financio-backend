@@ -1,58 +1,159 @@
-<p align="center"><a href="https://laravel.com" target="_blank"><img src="https://raw.githubusercontent.com/laravel/art/master/logo-lockup/5%20SVG/2%20CMYK/1%20Full%20Color/laravel-logolockup-cmyk-red.svg" width="400" alt="Laravel Logo"></a></p>
+# Financio Backend — Laravel Invoice Management API
 
-<p align="center">
-<a href="https://github.com/laravel/framework/actions"><img src="https://github.com/laravel/framework/workflows/tests/badge.svg" alt="Build Status"></a>
-<a href="https://packagist.org/packages/laravel/framework"><img src="https://img.shields.io/packagist/dt/laravel/framework" alt="Total Downloads"></a>
-<a href="https://packagist.org/packages/laravel/framework"><img src="https://img.shields.io/packagist/v/laravel/framework" alt="Latest Stable Version"></a>
-<a href="https://packagist.org/packages/laravel/framework"><img src="https://img.shields.io/packagist/l/laravel/framework" alt="License"></a>
-</p>
+REST API for invoice management built with Laravel 11, featuring full CRUD operations, soft deletes, and PHPUnit test coverage.
 
-## About Laravel
+---
 
-Laravel is a web application framework with expressive, elegant syntax. We believe development must be an enjoyable and creative experience to be truly fulfilling. Laravel takes the pain out of development by easing common tasks used in many web projects, such as:
+## Requirements
 
-- [Simple, fast routing engine](https://laravel.com/docs/routing).
-- [Powerful dependency injection container](https://laravel.com/docs/container).
-- Multiple back-ends for [session](https://laravel.com/docs/session) and [cache](https://laravel.com/docs/cache) storage.
-- Expressive, intuitive [database ORM](https://laravel.com/docs/eloquent).
-- Database agnostic [schema migrations](https://laravel.com/docs/migrations).
-- [Robust background job processing](https://laravel.com/docs/queues).
-- [Real-time event broadcasting](https://laravel.com/docs/broadcasting).
+- PHP >= 8.2
+- Composer
+- Docker Desktop (for MySQL)
 
-Laravel is accessible, powerful, and provides tools required for large, robust applications.
+---
 
-## Learning Laravel
+## Tech Stack
 
-Laravel has the most extensive and thorough [documentation](https://laravel.com/docs) and video tutorial library of all modern web application frameworks, making it a breeze to get started with the framework.
+- **Framework** — Laravel 11
+- **Database** — MySQL 8.0 (via Docker)
+- **Testing** — PHPUnit with SQLite in-memory
+- **API** — RESTful API with Laravel API Resources
 
-In addition, [Laracasts](https://laracasts.com) contains thousands of video tutorials on a range of topics including Laravel, modern PHP, unit testing, and JavaScript. Boost your skills by digging into our comprehensive video library.
+---
 
-You can also watch bite-sized lessons with real-world projects on [Laravel Learn](https://laravel.com/learn), where you will be guided through building a Laravel application from scratch while learning PHP fundamentals.
+## Setup Instructions
 
-## Agentic Development
-
-Laravel's predictable structure and conventions make it ideal for AI coding agents like Claude Code, Cursor, and GitHub Copilot. Install [Laravel Boost](https://laravel.com/docs/ai) to supercharge your AI workflow:
+### 1. Clone the repository
 
 ```bash
-composer require laravel/boost --dev
-
-php artisan boost:install
+git clone <repository-url>
+cd financio-backend
 ```
 
-Boost provides your agent 15+ tools and skills that help agents build Laravel applications while following best practices.
+### 2. Install dependencies
 
-## Contributing
+```bash
+composer install
+```
 
-Thank you for considering contributing to the Laravel framework! The contribution guide can be found in the [Laravel documentation](https://laravel.com/docs/contributions).
+### 3. Environment setup
 
-## Code of Conduct
+Copy the example environment file and configure it:
 
-In order to ensure that the Laravel community is welcoming to all, please review and abide by the [Code of Conduct](https://laravel.com/docs/contributions#code-of-conduct).
+```bash
+cp .env.example .env
+```
 
-## Security Vulnerabilities
+Update the following values in `.env`:
 
-If you discover a security vulnerability within Laravel, please send an e-mail to Taylor Otwell via [taylor@laravel.com](mailto:taylor@laravel.com). All security vulnerabilities will be promptly addressed.
+```
+DB_CONNECTION=mysql
+DB_HOST=127.0.0.1
+DB_PORT=3307
+DB_DATABASE=financio_backend
+DB_USERNAME=root
+DB_PASSWORD=secret
+```
 
-## License
+Then generate the application key:
 
-The Laravel framework is open-sourced software licensed under the [MIT license](https://opensource.org/licenses/MIT).
+```bash
+php artisan key:generate
+```
+
+### 4. Start MySQL via Docker
+
+```bash
+docker-compose up -d
+```
+
+Starts a MySQL 8.0 container on port `3307`. Verify:
+
+```bash
+docker ps
+```
+
+### 5. Run migrations
+
+```bash
+php artisan migrate
+```
+
+### 6. Run seeders
+
+```bash
+php artisan db:seed
+```
+
+Populates the database with sample invoices and invoice items.
+
+### 7. Start development server
+
+```bash
+php artisan serve
+```
+
+API available at: `http://localhost:8000`
+
+---
+
+## API Endpoints
+
+| Method | Endpoint | Description |
+|--------|----------|-------------|
+| GET | `/api/invoices` | List all invoices (paginated) |
+| POST | `/api/invoices` | Create a new invoice |
+| GET | `/api/invoices/{id}` | Get invoice details with items |
+| PUT | `/api/invoices/{id}` | Update an invoice |
+| DELETE | `/api/invoices/{id}` | Soft delete an invoice |
+
+
+---
+
+## Running PHPUnit Tests
+
+Tests use **SQLite in-memory** — no additional setup required.
+
+### Run all tests
+
+```bash
+php artisan test
+```
+
+### Run invoice API tests only
+
+```bash
+php artisan test --filter=InvoiceApiTest
+```
+
+### Expected output
+
+```
+PASS  Tests\Feature\InvoiceApiTest
+✓ can list invoices
+✓ list invoices returns empty when no data
+✓ list invoices supports pagination
+✓ list invoices fails with invalid sort
+✓ can create invoice
+✓ create invoice calculates amount automatically
+✓ create invoice fails without required fields
+✓ create invoice fails without items
+✓ create invoice fails with invalid item fields
+✓ create invoice fails duplicate number same customer same year
+✓ create invoice allows same number different customer
+✓ can show invoice with items
+✓ show invoice returns 404 when not found
+✓ can update invoice
+✓ update invoice replaces old items
+✓ update invoice fails without required fields
+✓ update invoice allows same invoice number on itself
+✓ update invoice returns 404 when not found
+✓ can delete invoice
+✓ deleted invoice not visible in list
+✓ deleted invoice returns 404 on show
+✓ delete invoice returns 404 when not found
+
+Tests: 22 passed
+```
+
+

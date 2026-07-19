@@ -26,9 +26,7 @@ class InvoiceController extends Controller
         $invoices = Invoice::orderBy($sortBy, $sortOrder)
             ->paginate($perPage);
 
-        // 3. Maximize API Resource: 
-        // Laravel automatik buat "data", "meta", dan "links"
-        // Kita guna ->additional() untuk selitkan "status" dan "message"
+        
         return InvoiceResource::collection($invoices)->additional([
             'status'  => 'success',
             'message' => 'Invoices retrieved successfully'

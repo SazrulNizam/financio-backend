@@ -17,9 +17,9 @@ class InvoiceItemResource extends JsonResource
         return [
             'id'           => $this->id,
             'product_name' => $this->product_name,
-            'unit_price'   => (float) $this->unit_price,
+            'unit_price'   => $this->unit_price,
             'quantity'     => $this->quantity,
-            'total_amount' => (float) $this->total_amount,
+            'total_amount' => $this->total_amount,
         ];
     }
 }

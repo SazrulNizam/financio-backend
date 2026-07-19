@@ -14,6 +14,10 @@ class Invoice extends Model
         'invoice_number', 'customer_name', 'invoice_date', 'reference', 'amount'
     ];
 
+    protected $casts = [
+        'amount' => 'decimal:2',
+    ];
+
     public function items(): HasMany
     {
         return $this->hasMany(InvoiceItem::class);

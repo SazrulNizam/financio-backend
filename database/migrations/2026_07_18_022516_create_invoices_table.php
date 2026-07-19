@@ -21,10 +21,14 @@ return new class extends Migration
             $table->decimal('amount', 15, 2)->default(0.00);
             $table->timestamps();
             $table->softDeletes();
-            $table->unique(
-                ['customer_name', 'invoice_number', DB::raw('(YEAR(invoice_date))'), 'deleted_at'],
-                'invoice_customer_year_unique'
-            );
+
+            
+            if (DB::getDriverName() !== 'sqlite') {
+                $table->unique(
+                    ['customer_name', 'invoice_number', DB::raw('(YEAR(invoice_date))'), 'deleted_at'],
+                    'invoice_customer_year_unique'
+                );
+            }
         });
     }
 
